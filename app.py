@@ -11,10 +11,16 @@ users = [
 ]
 next_user_id = 4
 
+"""
+Getting all users
+"""
 @app.route('/users', methods=['GET'])
 def get_users():
     return ", ".join([user["username"] for user in users])
 
+"""
+Getting just the user with the specified id
+"""
 @app.route('/users/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     user = next((user["username"] for user in users if user['id'] == user_id), None)
@@ -23,6 +29,9 @@ def get_user(user_id):
     else:
         return "Error: User not found", 404
 
+"""
+Adding a new user into users
+"""
 @app.route('/users', methods=['POST'])
 def create_user():
     if 'username' not in request.form.keys():
@@ -38,6 +47,9 @@ def create_user():
     users.append(user)
     return f"User {username} created with id {user_id}", 201
 
+"""
+Updating the specifid user's id
+"""
 @app.route('/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
     user = next((user for user in users if user['id'] == user_id), None)
@@ -46,8 +58,11 @@ def update_user(user_id):
     if 'username' not in request.form.keys():
         return "Error: Username is required", 400
     user['username'] = request.form['username']
-    return f"Id {user_id} updated with username {user['username']}"
+    return f"Id {user_id} updated with username {user['username']}", 200
 
+"""
+Deleting a user
+"""
 @app.route('/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     global users
